@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "934705753136",
+    "project_id": "i-chat-67d24",
+    "storage_bucket": "i-chat-67d24.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:934705753136:android:b42e29c138ea274d2e91f5",
+        "android_client_info": {
+          "package_name": "com.cit.i_chat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "934705753136-igo34bqmjdr5dm8hco6pdffcdf326cag.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAo9U8dKYqG5H-TiG4dx5omomB8Uce8s8k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "934705753136-igo34bqmjdr5dm8hco6pdffcdf326cag.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
