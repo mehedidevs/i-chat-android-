@@ -10,10 +10,18 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.cit.i_chat.databinding.ActivityRegisterBinding;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -23,6 +31,10 @@ public class RegisterActivity extends AppCompatActivity {
 
     FirebaseAuth mAuth;
 
+    DatabaseReference userReference;
+
+    FirebaseUser firebaseUser;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,6 +42,8 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         mAuth = FirebaseAuth.getInstance();
+        userReference = FirebaseDatabase.getInstance().getReference("user");
+
 
         binding.loginBtn.setOnClickListener(v -> {
             startActivity(new Intent(this, LoginActivity.class));
@@ -59,16 +73,39 @@ public class RegisterActivity extends AppCompatActivity {
 
         //mAuth.signInWithEmailAndPassword("", "")
 
-       // mAuth.signOut();
+        // mAuth.signOut();
 
 
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                     @Override
                     public void onSuccess(AuthResult authResult) {
-                        Toast.makeText(RegisterActivity.this, "Success ! ", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(RegisterActivity.this, MainActivity.class));
-                        finish();
+
+                        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+                        Map<String, Object> userMap = new HashMap<>();
+                        userMap.put("user_name", name);
+                        userMap.put("user_email", email);
+                        userMap.put("user_password", password);
+
+
+                        userReference.child(firebaseUser.getUid()).setValue(userMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
+
+                                    Toast.makeText(RegisterActivity.this, "Success ! ", Toast.LENGTH_SHORT).show();
+                                    startActivity(new Intent(RegisterActivity.this, MainActivity.class));
+                                    finish();
+                                } else {
+
+                                    showAlert(task.getException().getLocalizedMessage());
+                                }
+
+
+                            }
+                        });
+
+
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override

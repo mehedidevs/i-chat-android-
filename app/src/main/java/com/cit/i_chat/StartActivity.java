@@ -25,6 +25,8 @@ public class StartActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+
+
         if (firebaseUser != null) {
             startActivity(new Intent(this, MainActivity.class));
             finish();
