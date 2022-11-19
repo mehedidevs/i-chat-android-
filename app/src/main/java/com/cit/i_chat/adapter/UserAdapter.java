@@ -1,6 +1,7 @@
 package com.cit.i_chat.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.cit.i_chat.R;
+import com.cit.i_chat.activities.ChatActivity;
+import com.cit.i_chat.activities.OtherProfileActivity;
 import com.cit.i_chat.model.User;
 import com.cit.i_chat.viewholders.UserViewHolder;
 
@@ -42,9 +45,18 @@ public class UserAdapter extends RecyclerView.Adapter<UserViewHolder> {
 
         holder.chatBtn.setOnClickListener(v -> {
 
+            Intent intent = new Intent(context, ChatActivity.class);
+            intent.putExtra("key", user.getUser_email());
+            context.startActivity(intent);
+
+
         });
 
         holder.profileBtn.setOnClickListener(v -> {
+            Intent intent = new Intent(context, OtherProfileActivity.class);
+            intent.putExtra("key", user.getUser_email());
+            context.startActivity(intent);
+
 
         });
 
