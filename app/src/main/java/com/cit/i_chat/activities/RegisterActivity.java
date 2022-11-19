@@ -1,4 +1,4 @@
-package com.cit.i_chat;
+package com.cit.i_chat.activities;
 
 import android.content.DialogInterface;
 import android.content.Intent;

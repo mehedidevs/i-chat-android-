@@ -40,6 +40,13 @@ public class UserAdapter extends RecyclerView.Adapter<UserViewHolder> {
         holder.userEmailTv.setText(user.getUser_email());
         Glide.with(context).load(user.getUser_profile()).into(holder.profile_image);
 
+        holder.chatBtn.setOnClickListener(v -> {
+
+        });
+
+        holder.profileBtn.setOnClickListener(v -> {
+
+        });
 
     }
 

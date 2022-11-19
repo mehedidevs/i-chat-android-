@@ -1,4 +1,4 @@
-package com.cit.i_chat;
+package com.cit.i_chat.activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,8 +12,8 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.Toast;
 
+import com.cit.i_chat.R;
 import com.cit.i_chat.adapter.FragmentAdapter;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
@@ -100,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
 
                 break;
             case R.id.profileMenu:
-               startActivity(new Intent(MainActivity.this,ProfileActivity.class));
+               startActivity(new Intent(MainActivity.this, MyProfileActivity.class));
                 break;
         }
 

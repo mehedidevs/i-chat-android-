@@ -1,4 +1,4 @@
-package com.cit.i_chat;
+package com.cit.i_chat.activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.cit.i_chat.R;
 import com.cit.i_chat.model.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -21,7 +22,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class ProfileActivity extends AppCompatActivity {
+public class MyProfileActivity extends AppCompatActivity {
 
     ImageView cover_img, edit_img;
     CircleImageView profile;
@@ -61,8 +62,8 @@ public class ProfileActivity extends AppCompatActivity {
                     if (user != null){
                         name.setText(user.getUser_name());
                         email.setText(user.getUser_email());
-                        Glide.with(ProfileActivity.this).load(user.getUser_profile()).into(profile);
-                        Glide.with(ProfileActivity.this).load(user.getUser_profile()).into(cover_img);
+                        Glide.with(MyProfileActivity.this).load(user.getUser_profile()).into(profile);
+                        Glide.with(MyProfileActivity.this).load(user.getUser_profile()).into(cover_img);
                     }
 
 
@@ -79,7 +80,7 @@ public class ProfileActivity extends AppCompatActivity {
         }
 
         edit_img.setOnClickListener(v -> {
-            Intent intent = new Intent(ProfileActivity.this, ProfileEditActivity.class);
+            Intent intent = new Intent(MyProfileActivity.this, ProfileEditActivity.class);
             intent.putExtra("userId", currentUser);
             startActivity(intent);
         });
