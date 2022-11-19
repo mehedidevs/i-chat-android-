@@ -1,4 +1,4 @@
-package com.cit.i_chat;
+package com.cit.i_chat.fagment;
 
 import android.os.Bundle;
 
@@ -8,13 +8,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.cit.i_chat.R;
 
-public class UserFragment extends Fragment {
+
+public class CallFragment extends Fragment {
 
 
-    public UserFragment() {
+
+    public CallFragment() {
         // Required empty public constructor
     }
+
+
 
 
 
@@ -22,6 +27,6 @@ public class UserFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_user, container, false);
+        return inflater.inflate(R.layout.fragment_call, container, false);
     }
 }
