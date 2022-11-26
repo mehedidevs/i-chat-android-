@@ -13,6 +13,8 @@ import com.cit.i_chat.R;
 import com.cit.i_chat.adapter.UserAdapter;
 import com.cit.i_chat.databinding.FragmentUserBinding;
 import com.cit.i_chat.model.User;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -35,6 +37,8 @@ public class UserFragment extends Fragment {
 
     private FragmentUserBinding binding;
 
+    FirebaseUser firebaseUser;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -43,14 +47,21 @@ public class UserFragment extends Fragment {
         binding = FragmentUserBinding.inflate(getLayoutInflater(), container, false);
         userList = new ArrayList<>();
 
+        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+
         userRef = FirebaseDatabase.getInstance().getReference("user");
         userRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-
+                userList.clear();
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     User user = dataSnapshot.getValue(User.class);
-                    userList.add(user);
+
+                    if (!user.getUser_id().equals(firebaseUser.getUid())) {
+                        userList.add(user);
+                    }
+
+
                 }
                 UserAdapter userAdapter = new UserAdapter(requireActivity(), userList);
 

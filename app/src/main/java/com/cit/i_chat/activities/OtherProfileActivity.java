@@ -31,14 +31,14 @@ public class OtherProfileActivity extends AppCompatActivity {
 
     DatabaseReference databaseReference;
     Intent intent;
-    String userEmail;
+    String userid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
         intent = getIntent();
-        userEmail = intent.getStringExtra("key");
+        userid = intent.getStringExtra("key");
 
 
         cover_img = findViewById(R.id.cover_img);
@@ -47,23 +47,17 @@ public class OtherProfileActivity extends AppCompatActivity {
         email = findViewById(R.id.email);
         edit_img = findViewById(R.id.edit_img);
         edit_img.setVisibility(View.GONE);
-        databaseReference = FirebaseDatabase.getInstance().getReference("user");
+        databaseReference = FirebaseDatabase.getInstance().getReference("user").child(userid);
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                User user = snapshot.getValue(User.class);
 
-                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-
-                    User user = dataSnapshot.getValue(User.class);
-
-                    if (user.getUser_email().equals(userEmail)) {
-                        name.setText(user.getUser_name());
-                        email.setText(user.getUser_email());
-                        Glide.with(OtherProfileActivity.this).load(user.getUser_profile()).into(profile);
-                        Glide.with(OtherProfileActivity.this).load(user.getUser_profile()).into(cover_img);
-                        break;
-                    }
-
+                if (user != null) {
+                    name.setText(user.getUser_name());
+                    email.setText(user.getUser_email());
+                    Glide.with(OtherProfileActivity.this).load(user.getUser_profile()).into(profile);
+                    Glide.with(OtherProfileActivity.this).load(user.getUser_profile()).into(cover_img);
 
                 }
 

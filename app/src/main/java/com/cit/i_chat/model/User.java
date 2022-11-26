@@ -2,9 +2,10 @@ package com.cit.i_chat.model;
 
 public class User {
 
-    String user_name,user_email,user_password,user_profile;
+    String  user_id,  user_name,user_email,user_password,user_profile;
 
-    public User(String user_name, String user_email, String user_password, String user_profile) {
+    public User(String user_id, String user_name, String user_email, String user_password, String user_profile) {
+        this.user_id = user_id;
         this.user_name = user_name;
         this.user_email = user_email;
         this.user_password = user_password;
@@ -12,6 +13,10 @@ public class User {
     }
 
     public User() {
+    }
+
+    public String getUser_id() {
+        return user_id;
     }
 
     public String getUser_name() {

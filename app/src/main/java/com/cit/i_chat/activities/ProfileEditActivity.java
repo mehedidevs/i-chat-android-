@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -35,7 +36,7 @@ public class ProfileEditActivity extends AppCompatActivity {
 
     ImageView cover_img, back_img;
     CircleImageView profile;
-    EditText name,email;
+    EditText name, email;
     Button update_btn;
 
     Intent intent;
@@ -46,12 +47,16 @@ public class ProfileEditActivity extends AppCompatActivity {
 
     Uri imageUri;
 
-    String imageUrl;
+    String imageUrl = "";
+    ProgressDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ptofile_edit);
+        dialog = new ProgressDialog(this);
+        dialog.setTitle("Uploading image.....");
+        dialog.setMessage("Please Wait !");
 
         cover_img = findViewById(R.id.cover_img);
         profile = findViewById(R.id.profile_image);
@@ -62,106 +67,128 @@ public class ProfileEditActivity extends AppCompatActivity {
 
         intent = getIntent();
 
-       currentUserId = intent.getStringExtra("userId");
+        currentUserId = intent.getStringExtra("userId");
 
-       if (currentUserId != null){
-           Log.i("TAG", "onDataChange: "+currentUserId);
+        if (currentUserId != null) {
+            Log.i("TAG", "onDataChange: " + currentUserId);
 
-           databaseReference = FirebaseDatabase.getInstance().getReference("user").child(currentUserId);
-           storageReference = FirebaseStorage.getInstance().getReference("Profile").child(currentUserId);
-           databaseReference.addValueEventListener(new ValueEventListener() {
-               @Override
-               public void onDataChange(@NonNull DataSnapshot snapshot) {
-                   User user = snapshot.getValue(User.class);
+            databaseReference = FirebaseDatabase.getInstance().getReference("user").child(currentUserId);
+            storageReference = FirebaseStorage.getInstance().getReference("Profile").child(currentUserId);
+            databaseReference.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    User user = snapshot.getValue(User.class);
 
-                   Log.i("TAG", "onDataChange: "+user.getUser_name());
+                    Log.i("TAG", "onDataChange: " + user.getUser_name());
 
-                   if (user != null){
-                       name.setText(user.getUser_name());
-                       email.setText(user.getUser_email());
-                       Glide.with(ProfileEditActivity.this).load(user.getUser_profile()).into(profile);
-                   }
+                    if (user != null) {
+                        imageUrl = user.getUser_profile();
+
+                        name.setText(user.getUser_name());
+                        email.setText(user.getUser_email());
+                        Glide.with(getApplicationContext())
+                                .load(user.getUser_profile())
+                                .placeholder(R.drawable.profile_placeholder)
+                                .into(profile);
+                    }
 
 
-               }
+                }
 
-               @Override
-               public void onCancelled(@NonNull DatabaseError error) {
-                   Log.i("TAG", "onCancelled: "+error.getMessage());
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    Log.i("TAG", "onCancelled: " + error.getMessage());
 
-               }
-           });
-       }
+                }
+            });
+        }
 
         back_img.setOnClickListener(v -> {
             finish();
         });
 
-       update_btn.setOnClickListener(v -> {
+        update_btn.setOnClickListener(v -> {
 
-           String name_str = name.getText().toString();
-           String email_str = email.getText().toString();
+            dialog.show();
 
-
-
-
-           StorageReference storageRef = storageReference.child(name_str+System.currentTimeMillis());
-
-           storageRef.putFile(imageUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-               @Override
-               public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                   if (task.isSuccessful()){
-
-                       storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                           @Override
-                           public void onSuccess(Uri uri) {
-
-                               imageUrl = String.valueOf(uri);
-
-                               if (imageUrl != null){
-                                   if (name_str.equals("")){
-                                       name.setError("");
-                                   }else if (email_str.equals("")){
-                                       email.setError("");
-                                   }else {
-
-                                       HashMap<String, Object> updateMap = new HashMap<>();
-
-                                       updateMap.put("user_name", name_str);
-                                       updateMap.put("user_email", email_str);
-                                       updateMap.put("user_profile", imageUrl);
-
-                                       databaseReference.updateChildren(updateMap).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                           @Override
-                                           public void onComplete(@NonNull Task<Void> task) {
-                                               if (task.isSuccessful()){
-                                                   finish();
-                                               }
-                                           }
-                                       });
-
-                                   }
-                               }
-                           }
-                       });
-                   }
-               }
-           });
+            String name_str = name.getText().toString();
+            String email_str = email.getText().toString();
 
 
+            StorageReference storageRef = storageReference.child(name_str + System.currentTimeMillis());
+
+            if (imageUri == null) {
 
 
+                HashMap<String, Object> updateMap = new HashMap<>();
+
+                updateMap.put("user_name", name_str);
+                updateMap.put("user_email", email_str);
+                updateMap.put("user_profile", imageUrl);
 
 
+                databaseReference.updateChildren(updateMap).addOnCompleteListener(task1 -> {
+                    if (task1.isSuccessful()) {
+                        dialog.dismiss();
+                        finish();
+                    }
+                });
+
+            } else {
+
+                storageRef.putFile(imageUri).addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+
+                        storageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+
+                            imageUrl = String.valueOf(uri);
+
+                            if (imageUrl != null) {
+                                if (name_str.equals("")) {
+                                    name.setError("");
+                                } else if (email_str.equals("")) {
+                                    email.setError("");
+                                } else {
+
+                                    HashMap<String, Object> updateMap = new HashMap<>();
+
+                                    updateMap.put("user_name", name_str);
+                                    updateMap.put("user_email", email_str);
+                                    updateMap.put("user_profile", imageUrl);
 
 
-       });
+                                    databaseReference.updateChildren(updateMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task1) {
+                                            if (task1.isSuccessful()) {
+                                                dialog.dismiss();
+                                                finish();
+                                            }
+                                        }
+                                    });
 
-       profile.setOnClickListener(v -> {
-           Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-           intent.setType("image/*");
-           startActivityForResult(intent,101);
-       });
+                                }
+                            }
+                        });
+                    } else {
+
+                        dialog.dismiss();
+                        finish();
+                    }
+                });
+            }
+
+
+        });
+
+
+        profile.setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+            intent.setType("image/*");
+            startActivityForResult(intent, 101);
+        });
+
+        profile.setImageResource(R.drawable.profile_placeholder);
 
     }
 
@@ -169,9 +196,10 @@ public class ProfileEditActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == 101){
-            if (resultCode == RESULT_OK){
-                if (data != null){
+        if (requestCode == 101) {
+            if (resultCode == RESULT_OK) {
+                if (data != null) {
+                    Log.i("TAG", "onActivityResult: " + data.getData());
                     imageUri = data.getData();
                     profile.setImageURI(imageUri);
 

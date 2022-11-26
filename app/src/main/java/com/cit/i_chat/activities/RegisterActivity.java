@@ -82,13 +82,16 @@ public class RegisterActivity extends AppCompatActivity {
                     public void onSuccess(AuthResult authResult) {
 
                         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+                        String uid = firebaseUser.getUid();
                         Map<String, Object> userMap = new HashMap<>();
                         userMap.put("user_name", name);
+                        userMap.put("user_id", uid);
                         userMap.put("user_email", email);
+                        userMap.put("user_profile", "");
                         userMap.put("user_password", password);
 
 
-                        userReference.child(firebaseUser.getUid()).setValue(userMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        userReference.child(uid).setValue(userMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
                                 if (task.isSuccessful()) {

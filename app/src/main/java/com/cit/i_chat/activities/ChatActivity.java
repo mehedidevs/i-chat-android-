@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.cit.i_chat.R;
 import com.cit.i_chat.model.User;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -27,7 +28,9 @@ public class ChatActivity extends AppCompatActivity {
 
     DatabaseReference databaseReference;
     Intent intent;
-    String userEmail;
+    String userId;
+    
+    FirebaseUser firebaseUser;
 
 
     @Override
@@ -36,7 +39,7 @@ public class ChatActivity extends AppCompatActivity {
         setContentView(R.layout.activity_chat);
 
         intent = getIntent();
-        userEmail = intent.getStringExtra("key");
+        userId = intent.getStringExtra("key");
 
 
         name = findViewById(R.id.userNameTv);
@@ -47,22 +50,17 @@ public class ChatActivity extends AppCompatActivity {
             finish();
         });
 
-        databaseReference = FirebaseDatabase.getInstance().getReference("user");
+        databaseReference = FirebaseDatabase.getInstance().getReference("user").child(userId);
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
-                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                User user = snapshot.getValue(User.class);
 
-                    User user = dataSnapshot.getValue(User.class);
-
-                    if (user.getUser_email().equals(userEmail)) {
-                        name.setText(user.getUser_name());
-                        email.setText(user.getUser_email());
-                        Glide.with(ChatActivity.this).load(user.getUser_profile()).into(profile);
-                        break;
-                    }
-
+                if (user != null) {
+                    name.setText(user.getUser_name());
+                    email.setText(user.getUser_email());
+                    Glide.with(getApplicationContext()).load(user.getUser_profile()).into(profile);
 
                 }
 

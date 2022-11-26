@@ -46,7 +46,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserViewHolder> {
         holder.chatBtn.setOnClickListener(v -> {
 
             Intent intent = new Intent(context, ChatActivity.class);
-            intent.putExtra("key", user.getUser_email());
+            intent.putExtra("key", user.getUser_id());
             context.startActivity(intent);
 
 
@@ -54,7 +54,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserViewHolder> {
 
         holder.profileBtn.setOnClickListener(v -> {
             Intent intent = new Intent(context, OtherProfileActivity.class);
-            intent.putExtra("key", user.getUser_email());
+            intent.putExtra("key", user.getUser_id());
             context.startActivity(intent);
 
 
