@@ -2,6 +2,7 @@ package com.cit.i_chat.activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.cit.i_chat.R;
 import com.cit.i_chat.model.User;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -28,18 +30,26 @@ public class ChatActivity extends AppCompatActivity {
 
     DatabaseReference databaseReference;
     Intent intent;
-    String userId;
-    
+    String otherUserId;
+    String myUserId;
+
     FirebaseUser firebaseUser;
+
+
+    RecyclerView chatRecycler;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
+        chatRecycler = findViewById(R.id.chatRecycler);
+        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        myUserId = firebaseUser.getUid();
+
 
         intent = getIntent();
-        userId = intent.getStringExtra("key");
+        otherUserId = intent.getStringExtra("key");
 
 
         name = findViewById(R.id.userNameTv);
@@ -50,7 +60,7 @@ public class ChatActivity extends AppCompatActivity {
             finish();
         });
 
-        databaseReference = FirebaseDatabase.getInstance().getReference("user").child(userId);
+        databaseReference = FirebaseDatabase.getInstance().getReference("user").child(otherUserId);
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
