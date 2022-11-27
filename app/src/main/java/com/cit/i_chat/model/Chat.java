@@ -5,15 +5,21 @@ public class Chat {
     String receiverId;
     String message;
     String timesInMls;
+    String chatKey;
 
-    public Chat(String senderId, String receiverId, String message, String timesInMls) {
+    public Chat(String senderId, String receiverId, String message, String timesInMls, String chatKey) {
         this.senderId = senderId;
         this.receiverId = receiverId;
         this.message = message;
         this.timesInMls = timesInMls;
+        this.chatKey = chatKey;
     }
 
     public Chat() {
+    }
+
+    public String getChatKey() {
+        return chatKey;
     }
 
     public String getSenderId() {
