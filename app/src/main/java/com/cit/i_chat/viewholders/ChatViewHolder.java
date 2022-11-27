@@ -15,6 +15,7 @@ public class ChatViewHolder extends RecyclerView.ViewHolder {
 
     public ChatViewHolder(@NonNull View itemView) {
         super(itemView);
+
         messageTv = itemView.findViewById(R.id.messageTv);
         timeTv = itemView.findViewById(R.id.timeTv);
 

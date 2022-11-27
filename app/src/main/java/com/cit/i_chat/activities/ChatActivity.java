@@ -2,6 +2,7 @@ package com.cit.i_chat.activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
@@ -14,6 +15,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.cit.i_chat.R;
+import com.cit.i_chat.adapter.ChatAdapter;
 import com.cit.i_chat.model.Chat;
 import com.cit.i_chat.model.User;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -113,7 +115,7 @@ public class ChatActivity extends AppCompatActivity {
                     if (
                             chat.getReceiverId().equals(myUserId) && chat.getSenderId().equals(otherUserId)
                                     ||
-                            chat.getReceiverId().equals(otherUserId) && chat.getSenderId().equals(myUserId)
+                                    chat.getReceiverId().equals(otherUserId) && chat.getSenderId().equals(myUserId)
 
                     ) {
 
@@ -123,7 +125,6 @@ public class ChatActivity extends AppCompatActivity {
 
                 }
                 setChatToUi(chatList);
-
 
 
             }
@@ -145,10 +146,11 @@ public class ChatActivity extends AppCompatActivity {
 
     private void setChatToUi(List<Chat> chatList) {
 
-
-
-
-
+        ChatAdapter adapter = new ChatAdapter(getApplicationContext(), chatList, myUserId);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        layoutManager.setStackFromEnd(true);
+        chatRecycler.setLayoutManager(layoutManager);
+        chatRecycler.setAdapter(adapter);
 
 
     }
